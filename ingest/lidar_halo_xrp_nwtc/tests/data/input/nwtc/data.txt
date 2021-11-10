@@ -1,0 +1,5 @@
+# TODO – Developer: Add your input test data here
+Replace this file with a small data file for ingest development and testing. 
+
+Note that you must ensure that you have permission to release the file because it will
+be hosted publicly on github.
