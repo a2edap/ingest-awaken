@@ -13,7 +13,13 @@ def test_pipeline_at_nwtc():
         expand("config/pipeline_config_nwtc.yml", parent),
         expand("config/storage_config.yml", parent),
     )
-    output = pipeline.run(expand("tests/data/input/nwtc/data.txt", parent))
-    expected = xr.open_dataset(expand("tests/data/expected/nwtc/data.txt", parent))
+    output = pipeline.run(
+        expand("tests/data/input/nwtc/Stare_199_20210510_00.hpl", parent)
+    )
+    expected = xr.open_dataset(
+        expand(
+            "tests/data/expected/nwtc/nwtc.lidar-halo_xrp.b0.20210510.000125.nc", parent
+        )
+    )
 
     assert output.equals(expected)

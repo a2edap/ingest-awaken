@@ -1,42 +1,38 @@
-# TODO – Developer: Fill out this file. You can find the official documentation at
-# https://github.com/tsdat/tsdat/blob/main/examples/templates/ingest_pipeline_template.yml
-# or open an existing example in this repository to see what you can do here. Note that
-# the A2e program uses slightly different metadata conventions than tsdat and a
-# reviewer can help you determine which metadata should be included here.
-
 pipeline:
   type: Ingest
 
   # These parameters will be used to name files.
   location_id: "nwtc"
-  dataset_name: "lidar_halo_xrp_nwtc"
-  # qualifier: ""
-  # temporal: ""
+  dataset_name: "lidar"
+  qualifier: "halo_xrp"
+  # temporal: "10min"
   data_level: "b0"  # If not applying QC this should be set to "a0"
 
 dataset_definition:
   attributes:
     title: "Lidar Halo XRP NWTC"
-    description: "Ingest for the XRP Halo Lidar at the NWTC site"
+    description: "Ingest for the XRP Halo Lidar at the NREL Flatirons Campus"
     conventions: MHKiT-Cloud Data Standards v. 1.0
-    institution: Atmosphere to Electrons
+    institution: NREL
     code_url: https://github.com/a2edap/ingest-awaken
-    location_meaning: "NWTC"
+    location_meaning: "NREL Flatirons Campus"
 
   dimensions:
     time:
+        length: unlimited
+    range_gate:
         length: unlimited
 
   variables:
 
     time:
       input:
-        name: Timestamp (end of interval)
-        converter:
-          classname: tsdat.utils.converters.StringTimeConverter
-          parameters:
-            timezone: UTC
-            time_format: "%Y/%m/%d %H:%M:%S"
+        name: Timestamp
+        # converter:
+        #   classname: tsdat.utils.converters.StringTimeConverter
+        #   parameters:
+        #     timezone: UTC
+        #     time_format: "%Y/%m/%d %H:%M:%S"
       dims: [time]
       type: long
       attrs:
@@ -44,26 +40,80 @@ dataset_definition:
         standard_name: time
         units: seconds since 1970-01-01T00:00:00
     
-    example_var:          # Name of variable in the output file
+    range_gate:
       input:
-        name: "Example"   # Name of variable in the input file
-        # units: m        # Units the input variable was measured in. Provide this if 
-                          # the output units are different and you want tsdat to do the
-                          # conversion.
-      dims: [time]        # List of coordinates that dimension this variable. `time` is
-                          # a very common dimension, sometimes `height`, too.
-      type: float         # The data type, typically one of: `float`, `long`, `int`
+        name: range_gate
+      dims: [range_gate]
+      type: int
       attrs:
-        long_name: Example Var  # Label used by Xarray and other libraries for plotting
-        standard_name: ""       # Standard name from the CF Standard names table. 
-                                # Provide this if possible, otherwise remove it.
-        comment: ""             # User-friendly description of the property.
-        units: km               # Units attribute from the CF Standard list of units. 
-                                # Always provide this, even for 'unitless' quantities –
-                                # set `units: "1"` for such quantities.
+        long_name: Range gate
+
+    distance:
+      input:
+        name: distance
+      dims: [range_gate]
+      type: int
+      attrs:
+        long_name: Distance LOS measurement is taken from Lidar
+        units: m
+    
+    azimuth:
+      input:
+        name: Azimuth (degrees)
+      dims: [time]
+      type: float
+      attrs:
+        long_name: Azimuth
+        units: deg
+
+    elevation:
+      input:
+        name: Elevation (degrees)
+      dims: [time]
+      type: float
+      attrs:
+        long_name: Elevation
+        units: deg
+
+    pitch:
+      input:
+        name: Pitch (degrees)
+      dims: [time]
+      type: float
+      attrs:
+        long_name: Pitch
+        units: deg
+
+    roll:
+      input:
+        name: Roll (degrees)
+      dims: [time]
+      type: float
+      attrs:
+        long_name: Roll
+        units: deg
+    
+    doppler:
+      input:
+        name: Doppler
+      dims: [time, range_gate]
+      type: float
+      attrs:
+        long_name: Doppler
+        units: m/s
+        valid_delta: 1
+
+    intensity:
+      input:
+        name: Intensity
+      dims: [time, range_gate]
+      type: float
+      attrs:
+        long_name: Intensity
+        units: "1"
     
     latitude:
-      data: 71.323
+      data: 71.323  # TODO – Dan
       type: float
       attrs:
         long_name: "North latitude"
@@ -73,7 +123,7 @@ dataset_definition:
         valid_range: [-90.f, 90.f]
 
     longitude:
-      data: -156.609
+      data: -156.609  # TODO – Dan
       type: float
       attrs:
         long_name: "East longitude"
@@ -83,7 +133,7 @@ dataset_definition:
         valid_range: [-180.f, 180.f]
     
     altitude:
-      data: 4000.0
+      data: 4000.0  # TODO – Dan
       type: float
       attrs:
         long_name: "Altitude"
@@ -128,3 +178,17 @@ quality_management:
     variables:
       - DATA_VARS
     exclude: [latitude, longitude, altitude]
+
+  manage_valid_delta:
+    checker:
+      classname: tsdat.qc.checkers.CheckValidDelta
+      parameters:
+        dim: time  # specifies the dimension over which to compute the delta
+    handlers:
+      - classname: tsdat.qc.handlers.RecordQualityResults
+        parameters:
+          bit: 2
+          assessment: "Indeterminate"
+          meaning: "Difference between current and previous values exceeds valid_delta."
+    variables:
+      - doppler
