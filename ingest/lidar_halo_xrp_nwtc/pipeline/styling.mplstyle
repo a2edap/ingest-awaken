@@ -1,3 +1,7 @@
+figure.constrained_layout.use: true
+figure.figsize      : 14, 8
+figure.dpi          : 150
+
 font.family         : serif
 font.size           : 12
 axes.linewidth      : 2
@@ -7,6 +11,7 @@ legend.framealpha   : 1
 legend.edgecolor    : w
 
 xtick.top           : True
+xtick.alignment     : center
 xtick.minor.visible : True
 xtick.minor.size    : 5
 xtick.major.size    : 8

@@ -43,8 +43,8 @@ class HplHandler(tsdat.AbstractFileHandler):
             for line_num in range(6):
                 f.readline()
 
-            max_len = 10000
             # initialize arrays
+            max_len = 10000
             time = np.full(max_len, fill_value=np.nan)
             azimuth = np.full(max_len, fill_value=np.nan)
             elevation = np.full(max_len, fill_value=np.nan)
@@ -67,7 +67,7 @@ class HplHandler(tsdat.AbstractFileHandler):
                 pitch[index] = float(a[3])
                 roll[index] = float(a[4])
 
-                for i in range(num_gates):
+                for _ in range(num_gates):
                     b = f.readline().split()
                     range_gate = int(b[0])
                     doppler[index, range_gate] = float(b[1])
@@ -76,10 +76,6 @@ class HplHandler(tsdat.AbstractFileHandler):
 
                 # increment index
                 index += 1
-
-                # # print status
-                # if True and index % 100 == 0:
-                #     print(time[index-1])
 
         # Trim data where first time index is nan
         last_ind = np.where(np.isnan(time))[0][0]
@@ -94,15 +90,15 @@ class HplHandler(tsdat.AbstractFileHandler):
             "00.00",  # second
         )
         start_time = np.datetime64(start_time_string)
-        dtimes = time[:last_ind]
-        tt = []
-        for i, t in enumerate(dtimes):
-            tt.append(start_time + np.timedelta64(int(3600 * 1e6 * t), "us"))
+        datetimes = [
+            start_time + np.timedelta64(int(3600 * 1e6 * dtime), "us")
+            for dtime in time[:last_ind]
+        ]
 
         dataset = xr.Dataset(
             {
                 "Decimal time (hours)": (("time"), time[:last_ind]),
-                "Timestamp": (("time"), np.array(tt)),
+                "Timestamp": (("time"), np.array(datetimes)),
                 "Azimuth (degrees)": (("time"), azimuth[:last_ind]),
                 "Elevation (degrees)": (("time"), elevation[:last_ind]),
                 "Pitch (degrees)": (("time"), pitch[:last_ind]),
@@ -111,7 +107,7 @@ class HplHandler(tsdat.AbstractFileHandler):
                 "Intensity": (("time", "range_gate"), intensity[:last_ind, :]),
                 "Beta": (("time", "range_gate"), beta[:last_ind, :]),
             },
-            coords={"time": np.array(tt), "range_gate": np.arange(num_gates)},
+            coords={"time": np.array(datetimes), "range_gate": np.arange(num_gates)},
             attrs={"Range gate length (m)": float(metadata["Range gate length (m)"])},
         )
 

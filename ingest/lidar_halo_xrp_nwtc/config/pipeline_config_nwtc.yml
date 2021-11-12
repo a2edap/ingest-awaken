@@ -5,7 +5,6 @@ pipeline:
   location_id: "nwtc"
   dataset_name: "lidar"
   qualifier: "halo_xrp"
-  # temporal: "10min"
   data_level: "b0"  # If not applying QC this should be set to "a0"
 
 dataset_definition:

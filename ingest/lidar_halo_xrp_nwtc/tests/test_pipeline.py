@@ -1,14 +1,14 @@
 import os
 import xarray as xr
 from utils import expand, set_dev_env
-from ingest.lidar_halo_xrp_nwtc import Pipeline
+from ingest.lidar_halo_xrp_nwtc import LidarHaloXrpPipeline
 
 parent = os.path.dirname(__file__)
 
 
 def test_pipeline_at_nwtc():
     set_dev_env()
-    pipeline = Pipeline(
+    pipeline = LidarHaloXrpPipeline(
         expand("config/pipeline_config_nwtc.yml", parent),
         expand("config/storage_config.yml", parent),
     )

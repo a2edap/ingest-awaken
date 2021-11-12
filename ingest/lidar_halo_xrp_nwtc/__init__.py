@@ -1,6 +1,2 @@
-from .pipeline import (
-    Pipeline,
-    pipeline,
-    filehandler,
-)
+from .pipeline import *
 from .mapping import mapping

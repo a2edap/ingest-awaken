@@ -1,4 +1,4 @@
-from .pipeline import Pipeline
+from .pipeline import LidarHaloXrpPipeline
 from . import (
     pipeline,
     filehandler,
