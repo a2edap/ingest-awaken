@@ -2,7 +2,7 @@
 
 Ingest for the XRP Halo Lidar at the NWTC site
 
-Writen by [Daniel Zalkind](mailto:dzalkind@nrel.gov)
+Writen by [Daniel Zalkind](mailto:dzalkind@nrel.gov) and [Maxwell Levin](mailto:maxwell.levin@pnnl.gov)
 
 ## Ingest Organization
 

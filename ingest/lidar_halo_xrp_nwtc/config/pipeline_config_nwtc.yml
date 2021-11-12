@@ -49,13 +49,19 @@ dataset_definition:
         long_name: Range gate
 
     distance:
-      input:
-        name: distance
       dims: [range_gate]
       type: int
       attrs:
         long_name: Distance LOS measurement is taken from Lidar
         units: m
+
+    SNR:
+      dims: [time, range_gate]
+      type: float
+      attrs:
+        long_name: Signal to Noise Ratio
+        units: dB
+        _FillValue: -9999
     
     azimuth:
       input:

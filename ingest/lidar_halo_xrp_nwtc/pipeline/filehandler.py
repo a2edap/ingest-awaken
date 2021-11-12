@@ -22,7 +22,6 @@ class HplHandler(tsdat.AbstractFileHandler):
             xr.Dataset: An xr.Dataset object
         -------------------------------------------------------------------"""
 
-        # open file
         with open(filename, "r") as f:
             lines = []
             for line_num in range(11):
@@ -62,7 +61,6 @@ class HplHandler(tsdat.AbstractFileHandler):
                 if not len(a):  # is empty
                     break
 
-                data_point = {}
                 time[index] = float(a[0])
                 azimuth[index] = float(a[1])
                 elevation[index] = float(a[2])
