@@ -69,13 +69,13 @@ def run_pipeline(
     for file in files:
         success = dispatcher.dispatch(file)  # Automatically catches and logs exceptions
         if success:
-            logger.info("Successfully processed file '%s'", Path(file).name)
+            logger.info("Successfully processed input: '%s'", file)
             successes += 1
         else:
-            logger.warning("Failed to process file: '%s'", Path(file).name)
+            logger.warning("Failed to process input: '%s'", file)
             failures += 1
 
-    logger.info("Done! (%d successes, %d failures)", successes, failures)
+    logger.info("Done! (%d succeeded, %d failed)", successes, failures)
 
 
 if __name__ == "__main__":
