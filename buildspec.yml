@@ -1,0 +1,35 @@
+version: 0.2
+
+env:
+  parameter-store:
+    DAP_GITHUB_KEY: /code-build/github/dap-tsdat-shared-key
+
+phases:
+  pre_build:
+    commands:
+      - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+      - printf "Host github.com\n    User git\n    IdentityFile ~/.ssh/dap-github-key\n"  > ~/.ssh/config
+      - chmod 600 ~/.ssh/config*
+      - echo -----BEGIN OPENSSH PRIVATE KEY----- > ~/.ssh/dap-github-key
+      - echo $DAP_GITHUB_KEY >> ~/.ssh/dap-github-key && chmod 600 ~/.ssh/dap-github-key
+      - echo -----END OPENSSH PRIVATE KEY----- >> ~/.ssh/dap-github-key
+      - ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+      - echo Logging in to Amazon ECR...
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+      - export PIPELINE_NAME=`echo $CODEBUILD_INITIATOR | cut -c14-`
+      - export ID=$(aws codepipeline get-pipeline-state --region $AWS_DEFAULT_REGION --name $PIPELINE_NAME --query 'stageStates[?actionStates[?latestExecution.externalExecutionId==`'${CODEBUILD_BUILD_ID}'`]].latestExecution.pipelineExecutionId' --output text)
+      - export TRIGGER=$(aws codepipeline list-pipeline-executions --pipeline $PIPELINE_NAME | jq -r ".pipelineExecutionSummaries[]|select(.pipelineExecutionId==\"$ID\")|.trigger.triggerType")
+      - export LAST_SUCCESSFUL_COMMIT_ID=$(aws codepipeline list-pipeline-executions --pipeline-name $PIPELINE_NAME | jq -r '[.pipelineExecutionSummaries[] | select(.status == "Succeeded") | .sourceRevisions[0].revisionId][0]')
+      - echo Trigger is $TRIGGER, not Webhook means build all 
+      - name=base
+  build:
+    commands:
+      - echo Build started on `date`
+      - branch=`echo $CODEBUILD_INITIATOR | cut -c27-`  
+      - #assuming codepipeline/ingest-tsdat-
+      - git clone git@github.com:DAP-platform/tsdat-shared.git
+      - echo Building the Docker image $branch ... 
+      - bash build.sh $TRIGGER  all     
+  post_build:
+    commands:
+      - echo Build completed on `date`
