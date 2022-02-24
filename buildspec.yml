@@ -27,8 +27,6 @@ phases:
       - export BRANCH=`echo $CODEBUILD_INITIATOR | awk -F'-' '{print $NF}'`  
       - export CODE_REPO=`echo $CODEBUILD_INITIATOR | awk -F'-' '{print "ingest-"$(NF-1)}'`  
       - git clone git@github.com:DAP-platform/tsdat-shared.git
-      - git status
-      - git log
       - echo Building the Docker image $branch ... 
       - bash tsdat-shared/build.sh $TRIGGER  all     
   post_build:
