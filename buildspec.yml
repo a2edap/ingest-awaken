@@ -21,7 +21,6 @@ phases:
       - export TRIGGER=$(aws codepipeline list-pipeline-executions --pipeline $PIPELINE_NAME | jq -r ".pipelineExecutionSummaries[]|select(.pipelineExecutionId==\"$ID\")|.trigger.triggerType")
       - export LAST_SUCCESSFUL_COMMIT_ID=$(aws codepipeline list-pipeline-executions --pipeline-name $PIPELINE_NAME | jq -r '[.pipelineExecutionSummaries[] | select(.status == "Succeeded") | .sourceRevisions[0].revisionId][0]')
       - echo Trigger is $TRIGGER, not Webhook means build all 
-      - name=base
   build:
     commands:
       - echo Build started on `date`
