@@ -6,9 +6,7 @@ import logging
 from tsdat.io import S3Path
 from typing import List, Union
 from .cache import PipelineCache
-
-
-logger = logging.getLogger(__name__)
+from .logger import logger
 
 
 class PipelineDispatcher:
