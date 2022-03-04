@@ -38,6 +38,7 @@ class PipelineCache:
             ingest_module = importlib.import_module(ingest_module_classname)
             mappings: Dict["AnyStr@compile", IngestSpec] = ingest_module.mapping
             for regex, specification in mappings.items():
+                logger.debug("Registering ingest '%s' with pattern: %s", specification.name, regex)
                 self._register(regex, specification)
         logger.debug("Discovered ingest modules: %s", self._modules)
 
