@@ -103,6 +103,8 @@ class PipelineCache:
             "AnyStr@compile": The (single) regex pattern that matches the filepath.
 
         ----------------------------------------------------------------------------"""
+        for regex in self._cache.keys():
+            logger.info("Check '%s' with pattern: %s", filepath, regex)
         matches: List[str] = [
             regex for regex in self._cache.keys() if regex.match(filepath)
         ]
