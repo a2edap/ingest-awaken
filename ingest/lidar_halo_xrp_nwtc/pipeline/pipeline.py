@@ -43,11 +43,22 @@ class LidarHaloXrpPipeline(A2ePipeline):
         if ".raw." in raw_basename:  # tsdat-renamed raw file
             to_trim = raw_basename.index(".raw.") + len(".raw.")
             raw_basename = raw_basename[to_trim:]
+            # loc_id, instrument, z02/z03, data level, date, time, scan type, extension
+            if ".z" in raw_basename:
+                _, _, z_id, _, _, _, scan_type, _ = raw_basename.lower().split(".")
+            else:  # local NREL tsdat-ing
+                z_id = str(dataset.attrs["System ID"])
+                scan_type = ""
+                if "user" in raw_basename.lower():
+                    scan_type = "user"
+                elif "stare" in raw_basename.lower():
+                    scan_type = "stare"
+                elif "vad" in raw_basename.lower():
+                    scan_type = "vad"
+                elif "wind_profile" in raw_basename.lower():
+                    scan_type = "wind_profile"
 
         qualifier = self.config.pipeline_definition.qualifier
-
-        # loc_id, instrument, z02/z03, data level, date, time, scan type, extension
-        _, _, z_id, _, _, _, scan_type, _ = raw_basename.lower().split(".")
 
         if scan_type not in ["user", "stare", "vad", "wind_profile"]:
             raise NameError(f"Scan type '{scan_type}' not supported.")
