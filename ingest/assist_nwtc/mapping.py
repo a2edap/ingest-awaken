@@ -15,28 +15,28 @@ mapping: Dict["AnyStr@compile", IngestSpec] = {
         pipeline_config=expand("config/pipeline_config_nwtc.yml", __file__),
         storage_config=expand("config/storage_config.yml", __file__),
         name="assist_summary_DAP",
-    ),   
+    ),
     # Mapping for Raw Data -> Ingest (NREL Server)
     re.compile(r".*Assist-10.*assistsummary.*.cdf"): IngestSpec(
         pipeline=Pipeline,
-        pipeline_config=expand("config/pipeline_config_nwtc.yml", __file__),
-        storage_config=expand("config/storage_config_10.yml", __file__),
+        pipeline_config=expand("config/pipeline_config_nwtc_10.yml", __file__),
+        storage_config=expand("config/storage_config.yml", __file__),
         name="assist_summary_10",
     ),
     re.compile(r".*Assist-11.*assistsummary.*.cdf"): IngestSpec(
         pipeline=Pipeline,
-        pipeline_config=expand("config/pipeline_config_nwtc.yml", __file__),
-        storage_config=expand("config/storage_config_11.yml", __file__),
+        pipeline_config=expand("config/pipeline_config_nwtc_11.yml", __file__),
+        storage_config=expand("config/storage_config.yml", __file__),
         name="assist_summary_11",
     ),
     re.compile(r".*Assist-12.*assistsummary.*.cdf"): IngestSpec(
         pipeline=Pipeline,
-        pipeline_config=expand("config/pipeline_config_nwtc.yml", __file__),
-        storage_config=expand("config/storage_config_12.yml", __file__),
+        pipeline_config=expand("config/pipeline_config_nwtc_12.yml", __file__),
+        storage_config=expand("config/storage_config.yml", __file__),
         name="assist_summary_12",
     ),
     # Mapping for Processed Data -> Ingest (so we can reprocess plots)
-    re.compile(r"YOUR-REGEX-HERE"): IngestSpec(
+    re.compile(r".*assist.*b0.*nc"): IngestSpec(
         pipeline=Pipeline,
         pipeline_config=expand("config/pipeline_config_nwtc.yml", __file__),
         storage_config=expand("config/storage_config.yml", __file__),
