@@ -9,9 +9,12 @@ from typing import Dict
 from tsdat import DSUtil
 from utils import A2ePipeline, format_time_xticks
 import datetime as dtm
+import warnings
+
+warnings.filterwarnings("ignore")
 
 
-def subplots(vert_size, hor_size, margin=0.05, spacing=0.02):
+def subplots(vert_size, hor_size, margin=0.065, spacing=0.02):
 
     w = hor_size / np.sum(hor_size) * (1 - 2 * margin - len(hor_size) * spacing)
     x = margin + np.append(0, np.cumsum(w[:-1] + spacing))
@@ -53,9 +56,9 @@ class Pipeline(A2ePipeline):
             "Front End": "frontEndEnclosureTemp",
             "Interferometer": "interferometerTemp",
             "Cooling block thermistor": "detectorStirlingCoolerBlockTemp",
-            "LW Responsivity": "LWresponsivity",
-            "Imaginary radiance": "mean_imaginary_rad_985_990",
-            "Interferometer humidity [%]": "interferometerHumidity",
+            "LW Resp.": "LWresponsivity",
+            "Imag. Rad.": "mean_imaginary_rad_985_990",
+            "Interf. RH [%]": "interferometerHumidity",
             "Hatch status": "hatchOpen",
         }
 
@@ -71,9 +74,9 @@ class Pipeline(A2ePipeline):
             "Front End": 0,
             "Interferometer": 0,
             "Cooling block thermistor": 0,
-            "LW Responsivity": 0,
-            "Imaginary radiance": 0,
-            "Interferometer humidity [%]": 0,
+            "LW Resp.": 0,
+            "Imag. Rad.": 0,
+            "Interf. RH [%]": 0,
             "Hatch status": 0,
         }
 
@@ -95,9 +98,9 @@ class Pipeline(A2ePipeline):
                 "HBB (top)",
                 "HBB (bottom)",
             ],
-            ["LW Responsivity"],
-            ["Imaginary radiance"],
-            ["Interferometer humidity [%]"],
+            ["LW Resp."],
+            ["Imag. Rad."],
+            ["Interf. RH [%]"],
         ]
 
         colors = [
@@ -143,7 +146,7 @@ class Pipeline(A2ePipeline):
                 ):  # time.data[-1] - t0 >= np.timedelta64(int(N_days * 24 * 3600 * 0.9), "s"):
                     t0 = []
 
-                    fig = plt.figure(figsize=(18, 10))
+                    fig = plt.figure(figsize=(19, 9))
                     ax = subplots([0.1, 3, 1.5, 1, 1, 1], [1])
 
                     # hatch

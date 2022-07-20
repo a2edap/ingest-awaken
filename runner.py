@@ -10,7 +10,6 @@ from utils import (
     set_prod_env,
 )
 
-
 # TODO: Examine logging more closely –  can this be improved?
 logger = logging.getLogger(__name__)
 
@@ -66,16 +65,21 @@ def run_pipeline(
 
     successes = 0
     failures = 0
+    skips=0
     for file in files:
-        success = dispatcher.dispatch(file)  # Automatically catches and logs exceptions
-        if success:
+        flag = dispatcher.dispatch(file)  # Automatically catches and logs exceptions
+        if flag==1:
             logger.info("Successfully processed input: '%s'", file)
             successes += 1
-        else:
+        elif flag==0:
             logger.warning("Failed to process input: '%s'", file)
             failures += 1
+        elif flag==-1:
+            logger.info("Skipped input: '%s'", file)
+            skips += 1
 
-    logger.info("Done! (%d succeeded, %d failed)", successes, failures)
+
+    logger.info("Done! (%d succeeded, %d failed, %d skipped)", successes, failures,skips)
 
 
 if __name__ == "__main__":
