@@ -9,9 +9,6 @@ from utils import (
     set_dev_env,
     set_prod_env,
 )
-import glob
-import os
-
 
 # TODO: Examine logging more closely –  can this be improved?
 logger = logging.getLogger(__name__)
